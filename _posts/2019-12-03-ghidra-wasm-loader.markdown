@@ -8,7 +8,7 @@ excerpt:
 mathjax: true
 ---
 
-#<img align="middle" src="https://habrastorage.org/webt/xy/1q/jm/xy1qjmpn0nactzdrq1laun9brhm.png"  />
+<img align="middle" src="https://habrastorage.org/webt/xy/1q/jm/xy1qjmpn0nactzdrq1laun9brhm.png"  />
 
 This week, NSA (<a href="https://www.nsa.gov/">National Security Agency</a>) all of a sudden made a gift to humanity, opening sources of their software reverse engineering framework. Community of the reverse engineers and security experts with great enthusiasm started to explore the new toy. According to the feedback, it’s really amazing tool, able to compete with existing solutions, such as IDA Pro, R2 and JEB. The tool is called Ghidra and professional resources are full of impressions from researchers.  Actually, they had a good reason: not every day government organizations provide access to their internal tools. Myself as a professional reverse engineer and malware analyst couldn’t pass by as well. I decided to spend a weekend or two and get a first impression of the tool. I had played a bit with disassembly and decided to check extensibility of the tool. In this series of articles, I'll explain the development of Ghidra add-on, which loads custom format, used to solve CTF task. As it’s a large framework and I've chosen quite complicated task, I’ll break the article into several parts.
 By the end of this part I hope to setup development environment and build minimal module, which will be able to recognize format of the WebAssembly file and will suggest the right disassembler to process it.  
@@ -18,7 +18,7 @@ Let's start with the task description. Last year security company FireEye hosted
 
 The task I’m going to use for study can be download from flareon5 challenge <a href="http://www.flare-on.com/files/Flare-On5_Challenges.zip">site</a>. There’s file 05_web2point0.7z: archive encrypted with a scary word <b>infected</b>. There are three files in the archive: index.html, main.js and test.wasm. Let’s open the file index.html in a browser and check the result out:
 
-#<img src="https://habrastorage.org/webt/5z/o2/fd/5zo2fdf7jjndo2tmhesju4go7io.png" />
+<img src="https://habrastorage.org/webt/5z/o2/fd/5zo2fdf7jjndo2tmhesju4go7io.png" />
 
 Well, that’s what I’ll work with. Let’s start with html study, especially since it’s the easiest part of the challenge. The html code doesn’t contain anything except loading of main.js script.
 
@@ -55,11 +55,11 @@ There's no surprises, and I'll try to do it in Ghidra. But first I have to insta
 
 Let’s create new ghidra project (<b>File->New Project</b>), and call it "wasm"/
 
-#<img src="https://habrastorage.org/webt/yt/1j/2s/yt1j2sgpytbsoyhsschjdit4v7m.png" />
+<img src="https://habrastorage.org/webt/yt/1j/2s/yt1j2sgpytbsoyhsschjdit4v7m.png" />
 
 Then add to project the file test.wasm (<b>File->Import file</b>) and see how ghidra can deal with it
 
-#<img src="https://habrastorage.org/webt/up/wq/jq/upwqjqan-5cooznznqw5pcks-pw.png" />
+<img src="https://habrastorage.org/webt/up/wq/jq/upwqjqan-5cooznznqw5pcks-pw.png" />
 
 Well, it can do nothing. It doesn’t recognize format and can’t disassembly anything, therefore it’s absolutely powerless to deal with this task. Finally we’ve come to the subject of the article. There's nothing left to do, but write a module, which is able to load wasm file, analyze it and disassembly its code.
 
@@ -84,15 +84,15 @@ As it  follows from the developers docs following steps must be done to add modu
 </ul>
 Now, when we have all necessary theory, it’s time to create the module project. Thanks to the previously installed eclipse extension GhidraDev, we have the module template right in the <b>File->New project</b> menu.
 
-#<img src="https://habrastorage.org/webt/ir/z3/77/irz377yf_rcsginnfb-e8-ee-ga.png" />
+<img src="https://habrastorage.org/webt/ir/z3/77/irz377yf_rcsginnfb-e8-ee-ga.png" />
 
 Wizard ask what components are required. As it was described before, we would need two of them: loader and analyzer.
 
-#<img src="https://habrastorage.org/webt/vf/cc/j1/vfccj1djknkxefjuc1bg9pysycs.png" />
+<img src="https://habrastorage.org/webt/vf/cc/j1/vfccj1djknkxefjuc1bg9pysycs.png" />
 
 Wizard creates project skeleton with all the necessary parts: blank analyzer in the file WasmAnalyzer.java, blank loader in file WasmLoader.java and language skeleton in directory /data/languages.
 
-#<img src="https://habrastorage.org/webt/bu/3q/uw/bu3quwuupe-0heogbta81hrub7c.png" />
+<img src="https://habrastorage.org/webt/bu/3q/uw/bu3quwuupe-0heogbta81hrub7c.png" />
 
 Let’s start with the loader. As it was mentioned, it should be inherited from the class AbstractLibrarySupportLoader and has three methods to be overloaded: 
 <ul>
@@ -129,7 +129,7 @@ Loader uses this object to verify signature of the file. Then, in case of succes
 </source>
 Sure thing it returns nothing, because ghidra doesn’t know processor, called WebAssembly and it's need to define it. As I told before, wizard created the language skeleton in directory data/languages. 
 
-#<img src="https://habrastorage.org/webt/ck/hq/0d/ckhq0d4gena4dbalhjufpwv9kbs.png" />
+<img src="https://habrastorage.org/webt/ck/hq/0d/ckhq0d4gena4dbalhjufpwv9kbs.png" />
 
 At the current stage there are two files which might be interesting: Webassembly.opinion and Wbassembly.ldefs. File .opinon sets the correspondence between loader and processor. 
 
@@ -167,11 +167,11 @@ Now, it’s time to get back to the loader and return specification of the loade
 
 Everything’s ready for the test run. Plugin for GhidraDev has added run option “<b>Run->Run As->Ghidra</b>” to eclipse:
 
-#<img src="https://habrastorage.org/webt/j5/z-/ft/j5z-ft7xxiy1equy99ahzrt6d7a.png" />
+<img src="https://habrastorage.org/webt/j5/z-/ft/j5z-ft7xxiy1equy99ahzrt6d7a.png" />
 
 It runs ghidra in debug mode and deploys there module, giving a great opportunity to work with the tool and in the same time use debugger to fix errors in the module being developed. But at this simple stage there is no reason to use a debugger. As before, I’ll create new project, import file and see whether my efforts paid off. Unlike the last time, the file is recognized as WebAssembly, and loader proposes corresponding processor for it. That means everything works, and my module is able to recognize format.
 
-#<img src="https://habrastorage.org/webt/zs/np/vd/zsnpvdvzqx5ecg7xdlz86dzres0.png" />
+<img src="https://habrastorage.org/webt/zs/np/vd/zsnpvdvzqx5ecg7xdlz86dzres0.png" />
 
 In the next article I’ll extend loader, and make it not only recognize, but also describe the structure of the wasm file. I think at this stage, after environment is set up, it will be easy to do. 
 
