@@ -2,7 +2,7 @@
 layout: post
 title:  "Writing a wasm loader for Ghidra. Part 1: Problem statement and setting up environment"
 date: 2019-12-03
-categories: jekyll
+categories: ghidra
 tags: ghidra, WebAssembly
 excerpt: 
 mathjax: true
