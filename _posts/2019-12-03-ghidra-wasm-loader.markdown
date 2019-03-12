@@ -8,11 +8,17 @@ excerpt:
 mathjax: true
 ---
 
+
 <img align="middle" src="https://habrastorage.org/webt/xy/1q/jm/xy1qjmpn0nactzdrq1laun9brhm.png"  />
 
 This week, NSA (<a href="https://www.nsa.gov/">National Security Agency</a>) all of a sudden made a gift to humanity, opening sources of their software reverse engineering framework. Community of the reverse engineers and security experts with great enthusiasm started to explore the new toy. According to the feedback, it’s really amazing tool, able to compete with existing solutions, such as IDA Pro, R2 and JEB. The tool is called Ghidra and professional resources are full of impressions from researchers.  Actually, they had a good reason: not every day government organizations provide access to their internal tools. Myself as a professional reverse engineer and malware analyst couldn’t pass by as well. I decided to spend a weekend or two and get a first impression of the tool. I had played a bit with disassembly and decided to check extensibility of the tool. In this series of articles, I'll explain the development of Ghidra add-on, which loads custom format, used to solve CTF task. As it’s a large framework and I've chosen quite complicated task, I’ll break the article into several parts.
 By the end of this part I hope to setup development environment and build minimal module, which will be able to recognize format of the WebAssembly file and will suggest the right disassembler to process it.  
-<cut />
+
+
+
+
+
+
 
 Let's start with the task description. Last year security company FireEye hosted CTF contest, named flare-on. During the contest researchers had to solve twelve tasks, related to reverse-engineering. One of the tasks was to research the web-application, built with WebAssembly. It’s relatively new executable format, and as far as I know, there’s no perfect tools to deal with it. During the challenge, I tried several various tools trying to defeat it. Those were simple scripts from github and known decompilers, such as IDA pro and JEB. Surprisingly, I’ve stopped on chrome, which provides pretty good disassembler and debugger for WebAssembly. My goal is to solve the challenge with the ghidra. I’m going to describe the study as fully as possible and give all the possible information to reproduce my steps. Maybe, as a person, who doesn’t have much experience with the instrument, I might go into some unnecessary details, but it is how it is. 
 
