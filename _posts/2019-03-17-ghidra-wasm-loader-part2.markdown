@@ -26,8 +26,8 @@ But before I dive into coding, I propose to review the workflow of file analysis
 
 
 
+<div style="text-align:center"><img align="middle" src="https://andr3colonel.github.io/images/post2/pic2.png"/></div>
 
-<img align="right" src="https://andr3colonel.github.io/images/post2/pic2.png"/>
 
 After the user creates project, and choses what file he wants to import, Ghidra passes the file to method getSupportedLoadSpecs of the class LoaderService. The method tries to find all possible loaders, that can process choosen file. It gathers all the objects, instantiated from the AbstractProgramLoader or it’s sublasses (loaders) and calls the method findSupportedLoadSpecs from each of them. (I've already implemented this method in previous article),
 
