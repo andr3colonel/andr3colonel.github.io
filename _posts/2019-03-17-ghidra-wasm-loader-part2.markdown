@@ -10,6 +10,7 @@ mathjax: true
 
 <div style="text-align:center"><img align="middle" src="https://andr3colonel.github.io/images/post2/ghidra.png"/></div>
 
+
 In the previous  [article](https://andr3colonel.github.io/2019/03/12/ghidra-wasm-loader/)
  I’ve described how to build the simple module to parse WebAssembly binary loader for the Ghidra. The module, I've created, contained blank loader, blank analyzer, and placeholder for the processor. The only functionality it provided -- verification of the header and suggesting the loader which will parse input file. 
 
@@ -67,7 +68,9 @@ Now, let’s see how is wasm format works and what information I can get from th
 
 In high-level terms, structure of the wasm file can be represented by the following table: 
 
+
 <div style="text-align:center"><img align="middle" src="https://andr3colonel.github.io/images/post2/pictable.png"/></div>
+
 
 File starts with a header, containing magic identifier “\0asm” and version of the file format. The header is followed by a sequence of sections. Each section contains identifier, length of the data (in bytes) and, actually data. Format of the data depends on the ty. of the section. 
 There are two categories of the sections. Custom section is aimed to extension of the format by developer, has 0 in the id field, and is out of scope of this article. Known section has Id in range 1-11, and defined in the  specification of the format. 
@@ -128,8 +131,9 @@ createData(program, program.getListing(), start, header.toDataType());
 
 Result of execution of the code is on picture:
 
-<div style="text-align:center"><img align="middle" src="https://andr3colonel.github.io/images/post2/pic8.png"/></div>
 
+<div style="text-align:center"><img align="middle" src="https://andr3colonel.github.io/images/post2/pic8.png"/></div>
+<br>
 
 It works well for the fixed-size structures, but very often size of structure is variable and depends on data. As I told before, all the numbers in wasm format are encoded into the Leb128 format. Parsing this format, application reads bytes one-by-one, until it met byte which highest bit is non-zero. In other words, result size may be from one to five bytes. Processing the file, class Leb128 represents itself as one the primitive integer types, basing on data size.
 
