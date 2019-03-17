@@ -29,29 +29,29 @@ But before I dive into coding, I propose to review the workflow of file analysis
 <div style="text-align:center"><img align="middle" src="https://andr3colonel.github.io/images/post2/pic2.png"/></div>
 
 
-After the user creates project, and choses what file he wants to import, Ghidra passes the file to method getSupportedLoadSpecs of the class LoaderService. The method tries to find all possible loaders, that can process choosen file. It gathers all the objects, instantiated from the AbstractProgramLoader or it’s sublasses (loaders) and calls the method findSupportedLoadSpecs from each of them. (I've already implemented this method in previous article),
+After the user creates project, and choses what file he wants to import, Ghidra passes the file to method getSupportedLoadSpecs of the class [LoaderService](http://ghidra.re/ghidra_docs/api/ghidra/app/util/opinion/LoaderService.html). The method tries to find all possible loaders, that can process choosen file. It gathers all the objects, instantiated from the [AbstractProgramLoader](http://ghidra.re/ghidra_docs/api/ghidra/app/util/opinion/AbstractProgramLoader.html) or it’s sublasses (loaders) and calls the method findSupportedLoadSpecs from each of them. (I've already implemented this method in previous article),
 
-The method checks is loader able to process given file, and returns back array of the LoadSpec objects. Each object contains information of those who will further process the file and what Processor will be used to disassembly instructions. 
+The method checks is loader able to process given file, and returns back array of the [LoadSpec](http://ghidra.re/ghidra_docs/api/ghidra/app/util/opinion/LoadSpec.html) objects. Each object contains information of those who will further process the file and what Processor will be used to disassembly instructions. 
 
 Ghidra takes the output of query to LoaderService and use it to fill the fields of import dialog, allowing user to choose which loader Ghidra will use to process the file.
 
-After the user chooses parameters and clicks OK button, Ghidra calls method load of chosen loader. The method creates and returns back object of the class Program, which represents the memory, the symbols and the listing of processed file. 
-There are number of template classes, inherited from the AbstractProgram, taking initial setup and initialisation of the Program. I’ve decided to use AbstractLibrarySupportLoader as base class for my loader, because, according documentation, it “provides a framework to conveniently load Programs with support for linking against libraries contained in other Programs”. As far as binary contains import section, it would be convenient to use this class to show import methods from there. Additional advantage that the class is already implemented initialization of program and the only duty of the developer is to parse format and place it to the memory of program. After program initialisation's done, the class calls abstract method load, which should be overridden by developer in the subclass. This method allocates addition program memory, processes relocations and adds symbols. API process the following methods, that will come in handy:
+After the user chooses parameters and clicks OK button, Ghidra calls method load of chosen loader. The method creates and returns back object of the class [Program](http://ghidra.re/ghidra_docs/api/ghidra/program/model/listing/Program.html), which represents the memory, the symbols and the listing of processed file. 
+There are number of template classes, inherited from the AbstractProgram, taking initial setup and initialisation of the Program. I’ve decided to use [AbstractLibrarySupportLoader](http://ghidra.re/ghidra_docs/api/ghidra/app/util/opinion/AbstractLibrarySupportLoader.html) as base class for my loader, because, according documentation, it “provides a framework to conveniently load Programs with support for linking against libraries contained in other Programs”. As far as binary contains import section, it would be convenient to use this class to show import methods from there. Additional advantage that the class is already implemented initialization of program and the only duty of the developer is to parse format and place it to the memory of program. After program initialisation's done, the class calls abstract method load, which should be overridden by developer in the subclass. This method allocates addition program memory, processes relocations and adds symbols. API process the following methods, that will come in handy:
 
 <ul>
 <li>
-MemoryBlockUtil.createInitializedBlock. The method creates block in the virtual memory of the program and fills it with the values from the source. Ghidra will shows created blocks in the UI window “Program Trees"
+[MemoryBlockUtil.createInitializedBlock](http://ghidra.re/ghidra_docs/api/ghidra/app/util/MemoryBlockUtil.html). The method creates block in the virtual memory of the program and fills it with the values from the source. Ghidra will shows created blocks in the UI window “Program Trees"
 
 <div style="text-align:center"><img align="middle" src="https://andr3colonel.github.io/images/post2/pic4.png"/></div>
 </li>
     <li>
-DataUtilities.createData. It takes the structure, introduced by the object of DataType class, and applies it to the given address. Ghidra will annotate the data at the address according to the format of the structure:
+[DataUtilities.createData](http://ghidra.re/ghidra_docs/api/ghidra/program/model/data/DataUtilities.html). It takes the structure, introduced by the object of [DataType](http://ghidra.re/ghidra_docs/api/ghidra/program/model/data/DataType.html) class, and applies it to the given address. Ghidra will annotate the data at the address according to the format of the structure:
 
 <div style="text-align:center"><img align="middle" src="https://andr3colonel.github.io/images/post2/pic5.png"/></div>
 </li>
 
 <li>
-FunctionManager.CreateFunction. It marks range of memory as function. In the listing ghidra adds headers before the addresses marked as function.
+[FunctionManager.CreateFunction](http://ghidra.re/ghidra_docs/api/ghidra/program/model/listing/FunctionManager.html). It marks range of memory as function. In the listing ghidra adds headers before the addresses marked as function.
 
 <div style="text-align:center"><img align="middle" src="https://andr3colonel.github.io/images/post2/pic6.png"/></div>
 </li>
@@ -64,7 +64,7 @@ Symbols, marked as methods, are exposed to the Function directory of the Symbols
 </ul>
 
 
-Now, let’s see how is wasm format works and what information I can get from there to achieve the goal. Unfortunately I’m not have too much time to implement everything, so I will focus on structures, helping to solve the challenge. But uou can read the comprehensive description of the wasm format at this outstanding repository of Dan Gohman.
+Now, let’s see how is wasm format works and what information I can get from there to achieve the goal. Unfortunately I’m not have too much time to implement everything, so I will focus on structures, helping to solve the challenge. But uou can read the comprehensive description of the wasm format at this outstanding [repository](https://github.com/sunfishcode/wasm-reference-manual/blob/master/WebAssembly.md) by Dan Gohman.
 
 In high-level terms, structure of the wasm file can be represented by the following table: 
 
@@ -79,7 +79,7 @@ The most interesting sections from reverse-engineering perspective are those whi
 <div style="text-align:center"><img align="middle" src="https://andr3colonel.github.io/images/post2/pic3.png"/></div>
 
 Section “functions” binds metadata from section Type and Export to instructions from section Code. Exports and type contain information about method: name and parameters, while the entries from code section contain code instructions. 
-All the numbers in WebAssembly are represented by LEB128 format -- variable-length format to endode integer values.
+All the numbers in WebAssembly are represented by [LEB128](https://en.wikipedia.org/wiki/LEB128) format -- variable-length format to endode integer values.
 
 Now it’s time to implement obtained knowledge into the code. As usual, you can get the full code from the repository. In the article I’ll tell stop on the code, essential to understanding development process of the loader.
 
@@ -197,7 +197,7 @@ private Leb128 entries_count;
 private List<WasmExportEntry> exports = new ArrayList<WasmExportEntry>();
 ```
 
-Export entry implements interface StructureConverter, and returns own structure from method toDataType as well. Method toDataType of the class ExportSection takes the returned structure and adds it to own result, creating hierarchical type. 
+Export entry implements interface [StructureConverter](http://ghidra.re/ghidra_docs/api/ghidra/app/util/bin/StructConverter.html), and returns own structure from method toDataType as well. Method toDataType of the class ExportSection takes the returned structure and adds it to own result, creating hierarchical type. 
 
 ```java
 @Override
