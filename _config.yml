@@ -7,7 +7,7 @@
 
 # Site settings
 title: Andrey
-brief-intro: Reverse engineer and malware analyst
+brief-intro: Reverse engineer and malware researcher
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://andr3colonel.github.io" # the base hostname & protocol for your site
 

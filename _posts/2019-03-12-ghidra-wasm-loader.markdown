@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Writing a wasm loader for Ghidra. Part 1: Problem statement and setting up environment"
-date: 2019-12-03
+date: 2019-03-12
 categories: ghidra
 tags: ghidra, WebAssembly
 excerpt: 
